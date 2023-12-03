@@ -69,6 +69,10 @@ internal class App
                         case UserChoice.GetPersonalLeadersOnly:
                             PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.EducationLeader));
                             break;
+
+                        case UserChoice.Exit:
+                            Exit();
+                            break;
                     }
                     break;
 
@@ -101,6 +105,10 @@ internal class App
 
                             PrintQueries.PrintStudentsInClass(Context.GetAllStudentsInClass(className, nameSorting, ascOrDesc));
                             break;
+
+                        case UserChoice.Exit:
+                            Exit();
+                            break;
                     }
                     break;
 
@@ -126,6 +134,10 @@ internal class App
                         case UserChoice.AddPersonal:
                             var newPersonal = HelperMethods.CreateNewPersonal();
                             Context.AddPersonalToDB(newPersonal);
+                            break;
+
+                        case UserChoice.Exit:
+                            Exit();
                             break;
                     }
                     break;
