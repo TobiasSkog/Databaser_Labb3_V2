@@ -14,6 +14,7 @@ public partial class EdugradeHighSchoolContext : DbContext
     public EdugradeHighSchoolContext(DbContextOptions<EdugradeHighSchoolContext> options)
         : base(options)
     {
+
     }
 
     public virtual DbSet<Betyg> Betygs { get; set; }

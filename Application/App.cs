@@ -45,6 +45,7 @@ internal class App
                             .PageSize(15)
                             .AddChoices(new[]
                             {
+                                "Get All Personal",
                                 "Get All Teachers",
                                 "Get All Administrators",
                                 "Get All Education Leaders",
