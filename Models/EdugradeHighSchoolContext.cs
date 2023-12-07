@@ -243,13 +243,6 @@ public partial class EdugradeHighSchoolContext : DbContext
         try
         {
             Personals.Add(personal);
-            //Personals.Add(new Personal
-            //{
-            //    PersonalNamn = personal.PersonalNamn,
-            //    PersonalBefattning = personal.PersonalBefattning,
-            //    PersonalFörnamn = personal.PersonalFörnamn,
-            //    PersonalEfternamn = personal.PersonalEfternamn
-            //});
             SaveChanges();
 
         }
@@ -264,13 +257,6 @@ public partial class EdugradeHighSchoolContext : DbContext
         try
         {
             Studenters.Add(student);
-            //Studenters.Add(new Studenter
-            //{
-            //    StudentNamn = student.StudentNamn,
-            //    StudentSsn = student.StudentSsn,
-            //    StudentFörnamn = student.StudentFörnamn,
-            //    StudentEfternamn = student.StudentEfternamn
-            //});
             SaveChanges();
         }
         catch (DbUpdateException ex)
@@ -302,12 +288,12 @@ public partial class EdugradeHighSchoolContext : DbContext
     private Grade CalculateLowestGrade(ICollection<Betyg> grades)
     {
         var convertedGrades = grades.Select(b => MapGradesToNumericValue(b.Betyg1)).ToList();
-        return convertedGrades.Count > 0 ? (Grade)convertedGrades.Max() : Grade.F;
+        return convertedGrades.Count > 0 ? (Grade)convertedGrades.Min() : Grade.F;
     }
 
     private Grade CalculateHighestGrade(ICollection<Betyg> grades)
     {
         var convertedGrades = grades.Select(b => MapGradesToNumericValue(b.Betyg1)).ToList();
-        return convertedGrades.Count > 0 ? (Grade)convertedGrades.Min() : Grade.F;
+        return convertedGrades.Count > 0 ? (Grade)convertedGrades.Max() : Grade.F;
     }
 }
