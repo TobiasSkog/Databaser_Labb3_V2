@@ -14,26 +14,35 @@ internal class App
     {
         UserChoice = UserChoice.Invalid;
         Context = new();
-        Context.UpdateUsersWithFirstAndLastNames();
     }
-    public void Run()
+    public async Task Run()
     {
-        AnsiConsole.Cursor.Hide();
+        //List<Studenter> student = StudentGenerator.GenerateStudents(120, 150);
+        //List<Personal> personal = PersonalGenerator.GeneratePersonal(20, 30);
+        //Console.WriteLine("Adding student list to DB");
+        //Context.AddStudentToDB(student);
+        //Console.ReadKey();
+        //Console.WriteLine("Adding personal list to DB");
+        //Context.AddPersonalToDB(personal);
+        //Console.ReadKey();
+        //await Context.GenerateRandomBetyg(90, 282, 5, 30);
 
+        AnsiConsole.Cursor.Hide();
         while (_isAppRunning)
         {
+
             UserChoice = HelperMethods.GetUserChoiceFromString(AnsiConsole.Prompt(
-           new SelectionPrompt<string>()
+                new SelectionPrompt<string>()
                .Title("What would you like to do?")
                .PageSize(15)
                .AddChoices(new[]
                {
-                        "Get Personal",
-                        "Get Students",
-                        "Get All Grades From Last Month",
-                        "Get Grade Info From All Courses",
-                        "Add New User",
-                        "Exit"
+                    "Get Personal",
+                    "Get Students",
+                    "Get All Grades From Last Month",
+                    "Get Grade Info From All Courses",
+                    "Add New User",
+                    "Exit"
                })));
 
             switch (UserChoice)
@@ -56,19 +65,19 @@ internal class App
                     switch (personalChoice)
                     {
                         case UserChoice.GetPersonalAll:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonal());
+                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonal().Result);
                             break;
 
                         case UserChoice.GetPersonalTeachersOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Teacher));
+                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Teacher).Result);
                             break;
 
                         case UserChoice.GetPersonalAdminsOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Admin));
+                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Admin).Result);
                             break;
 
                         case UserChoice.GetPersonalLeadersOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.EducationLeader));
+                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.EducationLeader).Result);
                             break;
 
                         case UserChoice.Exit:
@@ -92,7 +101,7 @@ internal class App
                     switch (studentChoice)
                     {
                         case UserChoice.GetStudentsAll:
-                            PrintQueries.PrintStudentInformationAsTable(Context.GetAllStudents());
+                            PrintQueries.PrintStudentInformationAsTable(Context.GetAllStudents().Result);
                             break;
 
                         case UserChoice.GetStudentsByClass:
@@ -100,11 +109,11 @@ internal class App
                             string className = AnsiConsole.Prompt(
                                 new SelectionPrompt<string>()
                                     .Title("From which class?")
-                                    .AddChoices(Context.GetAllClassNames()));
+                                    .AddChoices(Context.GetAllClassNames().Result));
                             var nameSorting = HelperMethods.GetOrderOptionFirstOrLastName();
                             var ascOrDesc = HelperMethods.GetOrderOptionAscendingOrDescending();
 
-                            PrintQueries.PrintStudentsInClass(Context.GetAllStudentsInClass(className, nameSorting, ascOrDesc));
+                            PrintQueries.PrintStudentsInClass(Context.GetAllStudentsInClass(className, nameSorting, ascOrDesc).Result);
                             break;
 
                         case UserChoice.Exit:
@@ -129,12 +138,12 @@ internal class App
                     {
                         case UserChoice.AddStudent:
                             var newStudent = HelperMethods.CreateNewStudent();
-                            Context.AddStudentToDB(newStudent);
+                            await Context.AddStudentToDB(newStudent);
                             break;
 
                         case UserChoice.AddPersonal:
                             var newPersonal = HelperMethods.CreateNewPersonal();
-                            Context.AddPersonalToDB(newPersonal);
+                            await Context.AddPersonalToDB(newPersonal);
                             break;
 
                         case UserChoice.Exit:
@@ -144,11 +153,11 @@ internal class App
                     break;
 
                 case UserChoice.GetGradesLastMonth:
-                    PrintQueries.PrintGradesInformation(Context.GetAllGradesLastMonth());
+                    PrintQueries.PrintGradesInformation(Context.GetAllGradesLastMonth().Result);
                     break;
 
                 case UserChoice.GetAllCoursesWithGradeInfo:
-                    PrintQueries.PrintCourseInformation(Context.GetCourseInformation());
+                    PrintQueries.PrintCourseInformation(Context.GetCourseInformation().Result);
                     break;
 
                 case UserChoice.Exit:
@@ -165,6 +174,5 @@ internal class App
         _isAppRunning = false;
         UserChoice = UserChoice.Exit;
         AnsiConsole.Cursor.Show();
-
     }
 }

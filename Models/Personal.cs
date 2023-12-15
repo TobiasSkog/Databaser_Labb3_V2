@@ -15,5 +15,11 @@ public partial class Personal
 
     public string? PersonalEfternamn { get; set; }
 
+    public string? PersonalSsn { get; set; }
+
+    public string? PersonalKön { get; set; }
+
+    public byte? PersonalÅlder { get; set; }
+
     public virtual ICollection<Betyg> Betygs { get; set; } = new List<Betyg>();
 }

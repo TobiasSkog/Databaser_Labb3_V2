@@ -6,8 +6,7 @@ internal class Program
 {
     static void Main(string[] args)
     {
-
-        App Labb3 = new App();
-        Labb3.Run();
+        App Labb3 = new();
+        Labb3.Run().Wait();
     }
 }

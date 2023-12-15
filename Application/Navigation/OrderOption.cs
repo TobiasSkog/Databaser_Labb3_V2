@@ -1,11 +1,9 @@
-﻿namespace Databaser_Labb3_V2.Application.Navigation
+﻿namespace Databaser_Labb3_V2.Application.Navigation;
+public enum OrderOption
 {
-    public enum OrderOption
-    {
-        FirstName,
-        LastName,
-        Ascending,
-        Descending,
-        Invalid
-    }
+    FirstName,
+    LastName,
+    Ascending,
+    Descending,
+    Invalid
 }
