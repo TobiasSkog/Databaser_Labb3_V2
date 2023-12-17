@@ -9,3 +9,11 @@ Create a appsettings.json file in your root directory that looks like this but m
   }
 }
 ```
+
+
+# IF YOU ARE USING WINDOWS 11
+## To get the best experience viewing the database with this application
+You will have to go to Windows > Settings > System > For Developers > Terminal and change it to Windows Console Host
+This is the only working solution I found as of now to be able to change the console window for the user to be able to 
+display the information correctly on the screen! Hopefully I will find a different workaround in the near future, but this
+is the only way I know of now.
