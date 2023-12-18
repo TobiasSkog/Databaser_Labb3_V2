@@ -18,17 +18,6 @@ public class App
     }
     public async Task Run()
     {
-        //List<Studenter> student = StudentGenerator.GenerateStudents(120, 150);
-        //List<Personal> personal = PersonalGenerator.GeneratePersonal(20, 30);
-        //Console.WriteLine("Adding student list to DB");
-        //Repositories.AddStudentToDB(student);
-        //Console.ReadKey();
-        //Console.WriteLine("Adding personal list to DB");
-        //Repositories.AddPersonalToDB(personal);
-        //Console.ReadKey();
-        //BetygGenerator bg = new();
-        //await bg.GenerateRandomBetyg(0, 242, 1, 20);
-
         AnsiConsole.Cursor.Hide();
 
         while (_isAppRunning)
