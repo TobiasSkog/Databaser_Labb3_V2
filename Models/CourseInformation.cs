@@ -6,4 +6,5 @@ public class CourseInformation
     public Grade AverageGrade { get; set; }
     public Grade LowestGrade { get; set; }
     public Grade HighestGrade { get; set; }
+    public string? ÄmneAktivt { get; set; }
 }

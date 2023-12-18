@@ -1,83 +1,63 @@
 ﻿using Databaser_Labb3_V2.Application.Navigation;
 using Databaser_Labb3_V2.Models;
+using Databaser_Labb3_V2.Repositories;
 using Spectre.Console;
 
 namespace Databaser_Labb3_V2.Application;
 
-internal class App
+public class App
 {
     private bool _isAppRunning = true;
     private UserChoice UserChoice { get; set; }
-    private EdugradeHighSchoolContext Context { get; set; }
+    private IRepository Repository { get; set; }
 
-    public App()
+    public App(IRepository repository)
     {
         UserChoice = UserChoice.Invalid;
-        Context = new();
+        Repository = repository;
     }
     public async Task Run()
     {
         //List<Studenter> student = StudentGenerator.GenerateStudents(120, 150);
         //List<Personal> personal = PersonalGenerator.GeneratePersonal(20, 30);
         //Console.WriteLine("Adding student list to DB");
-        //Context.AddStudentToDB(student);
+        //Repositories.AddStudentToDB(student);
         //Console.ReadKey();
         //Console.WriteLine("Adding personal list to DB");
-        //Context.AddPersonalToDB(personal);
+        //Repositories.AddPersonalToDB(personal);
         //Console.ReadKey();
-        //await Context.GenerateRandomBetyg(90, 282, 5, 30);
+        //BetygGenerator bg = new();
+        //await bg.GenerateRandomBetyg(0, 242, 1, 20);
 
         AnsiConsole.Cursor.Hide();
+
         while (_isAppRunning)
         {
-
-            UserChoice = HelperMethods.GetUserChoiceFromString(AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-               .Title("What would you like to do?")
-               .PageSize(15)
-               .AddChoices(new[]
-               {
-                    "Get Personal",
-                    "Get Students",
-                    "Get All Grades From Last Month",
-                    "Get Grade Info From All Courses",
-                    "Add New User",
-                    "Exit"
-               })));
+            UserChoice = MenuOptions.MainMenu();
 
             switch (UserChoice)
             {
                 case UserChoice.GetPersonal:
-                    var personalChoice = HelperMethods.GetUserChoiceFromString(AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Get Teacher Information")
-                            .PageSize(15)
-                            .AddChoices(new[]
-                            {
-                                "Get All Personal",
-                                "Get All Teachers",
-                                "Get All Administrators",
-                                "Get All Education Leaders",
-                                "Back",
-                                "Exit"
-                            })));
+
+                    var personalChoice = MenuOptions.PersonalMenu();
 
                     switch (personalChoice)
                     {
                         case UserChoice.GetPersonalAll:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonal().Result);
+                            List<Personal> allPersonal = Repository.GetAllPersonal().Result;
+                            PrintQueries.PrintPersonalInformation(allPersonal);
                             break;
 
                         case UserChoice.GetPersonalTeachersOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Teacher).Result);
+                            PrintQueries.PrintPersonalInformation(Repository.GetAllPersonalsByRole(UserType.Teacher).Result);
                             break;
 
                         case UserChoice.GetPersonalAdminsOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.Admin).Result);
+                            PrintQueries.PrintPersonalInformation(Repository.GetAllPersonalsByRole(UserType.Admin).Result);
                             break;
 
                         case UserChoice.GetPersonalLeadersOnly:
-                            PrintQueries.PrintPersonalInformation(Context.GetAllPersonalsByRole(UserType.EducationLeader).Result);
+                            PrintQueries.PrintPersonalInformation(Repository.GetAllPersonalsByRole(UserType.EducationLeader).Result);
                             break;
 
                         case UserChoice.Exit:
@@ -87,33 +67,23 @@ internal class App
                     break;
 
                 case UserChoice.GetStudents:
-                    var studentChoice = HelperMethods.GetUserChoiceFromString(AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Get Student Information")
-                            .PageSize(15)
-                            .AddChoices(new[]
-                            {
-                                "Get All Students",
-                                "Get Students By Class",
-                                "Back",
-                                "Exit"
-                            })));
+                    var studentChoice = MenuOptions.StudentMenu();
                     switch (studentChoice)
                     {
                         case UserChoice.GetStudentsAll:
-                            PrintQueries.PrintStudentInformationAsTable(Context.GetAllStudents().Result);
+                            PrintQueries.PrintStudentInformationAsTable(Repository.GetAllStudents().Result);
                             break;
 
                         case UserChoice.GetStudentsByClass:
 
-                            string className = AnsiConsole.Prompt(
-                                new SelectionPrompt<string>()
-                                    .Title("From which class?")
-                                    .AddChoices(Context.GetAllClassNames().Result));
+                            string className = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                                .Title("From which class?")
+                                .AddChoices(Repository.GetAllClassNames().Result));
+
                             var nameSorting = HelperMethods.GetOrderOptionFirstOrLastName();
                             var ascOrDesc = HelperMethods.GetOrderOptionAscendingOrDescending();
 
-                            PrintQueries.PrintStudentsInClass(Context.GetAllStudentsInClass(className, nameSorting, ascOrDesc).Result);
+                            PrintQueries.PrintStudentsInClass(Repository.GetAllStudentsInClass(className, nameSorting, ascOrDesc).Result);
                             break;
 
                         case UserChoice.Exit:
@@ -123,27 +93,17 @@ internal class App
                     break;
 
                 case UserChoice.AddUser:
-                    var addUserChoice = HelperMethods.GetUserChoiceFromString(AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("What would you like to do?")
-                            .PageSize(15)
-                            .AddChoices(new[]
-                            {
-                                "Add New Student",
-                                "Add New Personal",
-                                "Back",
-                                "Exit"
-                            })));
+                    var addUserChoice = MenuOptions.AddUserMenu();
                     switch (addUserChoice)
                     {
                         case UserChoice.AddStudent:
                             var newStudent = HelperMethods.CreateNewStudent();
-                            await Context.AddStudentToDB(newStudent);
+                            await Repository.AddStudentToDB(newStudent);
                             break;
 
                         case UserChoice.AddPersonal:
                             var newPersonal = HelperMethods.CreateNewPersonal();
-                            await Context.AddPersonalToDB(newPersonal);
+                            await Repository.AddPersonalToDB(newPersonal);
                             break;
 
                         case UserChoice.Exit:
@@ -153,11 +113,43 @@ internal class App
                     break;
 
                 case UserChoice.GetGradesLastMonth:
-                    PrintQueries.PrintGradesInformation(Context.GetAllGradesLastMonth().Result);
+                    PrintQueries.PrintGradesInformation(Repository.GetAllGradesLastMonth().Result);
                     break;
 
                 case UserChoice.GetAllCoursesWithGradeInfo:
-                    PrintQueries.PrintCourseInformation(Context.GetCourseInformation().Result);
+                    PrintQueries.PrintCourseInformation(Repository.GetCourseInformation().Result);
+                    break;
+
+                case UserChoice.GetAllCoursesWithAverageAgeGender:
+                    PrintQueries.PrintAverageGradeByGenderAndAgeGroup(Repository.GetAverageGradesBasedByAgeAndGender().Result);
+                    break;
+
+                case UserChoice.DatabaseProjectQuestion:
+                    var databaseProjectChoice = MenuOptions.DatabaseProjectMenu();
+
+                    switch (databaseProjectChoice)
+                    {
+                        case UserChoice.DepartmentInfoTeachers:
+                            PrintQueries.PrintAmountOfTeachersInEachDepartMent(Repository.GetTeachersInEveryDepartMent().Result);
+                            break;
+
+                        case UserChoice.AllStudentInfo:
+                            PrintQueries.PrintAllStudentInfo(Repository.GetAllStudentInfo().Result);
+                            break;
+
+                        case UserChoice.GetAllActiveCourses:
+                            PrintQueries.PrintActiveCourses(Repository.GetAllActiveCourses().Result);
+                            break;
+
+                        case UserChoice.GetMaxAndAveragePayoutDepartment:
+                            PrintQueries.PrintMaxAndAveragePayoutDepartmentInfo(Repository.GetDepartmentPayoutInformation().Result);
+                            break;
+
+                        case UserChoice.Exit:
+                            Exit();
+                            break;
+                    }
+
                     break;
 
                 case UserChoice.Exit:

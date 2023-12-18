@@ -15,11 +15,19 @@ public partial class Personal
 
     public string? PersonalEfternamn { get; set; }
 
-    public string? PersonalSsn { get; set; }
+    public string PersonalSsn { get; set; } = null!;
 
     public string? PersonalKön { get; set; }
 
     public byte? PersonalÅlder { get; set; }
 
+    public DateOnly? PersonalStartDatum { get; set; }
+
+    public int? FkAvdelningId { get; set; }
+
+    public decimal? PersonalLön { get; set; }
+
     public virtual ICollection<Betyg> Betygs { get; set; } = new List<Betyg>();
+
+    public virtual Avdelning? FkAvdelning { get; set; }
 }

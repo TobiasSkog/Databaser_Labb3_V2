@@ -1,6 +1,6 @@
 ﻿namespace Databaser_Labb3_V2.Application.Navigation;
 
-internal enum UserChoice
+public enum UserChoice
 {
     GetPersonal,
     GetPersonalAll,
@@ -12,10 +12,16 @@ internal enum UserChoice
     GetStudentsByClass,
     GetGradesLastMonth,
     GetAllCoursesWithGradeInfo,
+    GetAllCoursesWithAverageAgeGender,
     AddUser,
     AddStudent,
     AddPersonal,
     Back,
     Exit,
-    Invalid
+    Invalid,
+    DatabaseProjectQuestion,
+    DepartmentInfoTeachers,
+    AllStudentInfo,
+    GetAllActiveCourses,
+    GetMaxAndAveragePayoutDepartment
 }

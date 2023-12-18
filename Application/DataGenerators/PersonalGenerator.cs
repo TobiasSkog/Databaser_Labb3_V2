@@ -20,10 +20,10 @@ public class PersonalGenerator
 
         for (int i = 0; i < count; i++)
         {
-            string firstName = gender == 'M' ? NameLists.GetMaleFirstName() : NameLists.GetFemaleFirstName();
-            string lastName = NameLists.GetLastName();
+            string firstName = gender == 'M' ? DataLists.GetMaleFirstName() : DataLists.GetFemaleFirstName();
+            string lastName = DataLists.GetLastName();
             string personalNamn = $"{firstName} {lastName}";
-            string personalSsn = NameLists.GenerateRandomSsn(gender);
+            string personalSsn = DataLists.GenerateRandomSsn(gender);
 
             personal.Add(new Personal
             {

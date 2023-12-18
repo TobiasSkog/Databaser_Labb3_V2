@@ -19,5 +19,9 @@ public partial class Studenter
 
     public byte? StudentÅlder { get; set; }
 
+    public DateTime? StudentFödelsedag { get; set; }
+
+    public DateOnly? StudentStartDatum { get; set; }
+
     public virtual ICollection<Betyg> Betygs { get; set; } = new List<Betyg>();
 }

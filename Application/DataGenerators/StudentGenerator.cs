@@ -19,10 +19,10 @@ public static class StudentGenerator
 
         for (int i = 0; i < count; i++)
         {
-            string firstName = gender == 'M' ? NameLists.GetMaleFirstName() : NameLists.GetFemaleFirstName();
-            string lastName = NameLists.GetLastName();
+            string firstName = gender == 'M' ? DataLists.GetMaleFirstName() : DataLists.GetFemaleFirstName();
+            string lastName = DataLists.GetLastName();
             string studentNamn = $"{firstName} {lastName}";
-            string studentSsn = NameLists.GenerateRandomSsn(gender);
+            string studentSsn = DataLists.GenerateRandomSsn(gender);
 
             students.Add(new Studenter { StudentNamn = studentNamn, StudentSsn = studentSsn });
         }

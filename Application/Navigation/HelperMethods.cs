@@ -2,7 +2,7 @@
 using Spectre.Console;
 
 namespace Databaser_Labb3_V2.Application.Navigation;
-internal static class HelperMethods
+public static class HelperMethods
 {
     public static UserChoice GetUserChoiceFromString(string choice)
     {
@@ -19,9 +19,15 @@ internal static class HelperMethods
             "Get Students By Class" => UserChoice.GetStudentsByClass,
             "Get All Grades From Last Month" => UserChoice.GetGradesLastMonth,
             "Get Grade Info From All Courses" => UserChoice.GetAllCoursesWithGradeInfo,
+            "Get Grade Info From Average Age And Gender Groups" => UserChoice.GetAllCoursesWithAverageAgeGender,
             "Add New User" => UserChoice.AddUser,
             "Add New Student" => UserChoice.AddStudent,
             "Add New Personal" => UserChoice.AddPersonal,
+            "Database Project Questions" => UserChoice.DatabaseProjectQuestion,
+            "Get Department Information (Teachers In Each Department)" => UserChoice.DepartmentInfoTeachers,
+            "Get All Info On All Students" => UserChoice.AllStudentInfo,
+            "Get All Active Courses" => UserChoice.GetAllActiveCourses,
+            "Get Maximum And Average Payout In Each Department" => UserChoice.GetMaxAndAveragePayoutDepartment,
             "Exit" => UserChoice.Exit,
             _ => UserChoice.Invalid
         };

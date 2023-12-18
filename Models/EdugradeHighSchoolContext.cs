@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Databaser_Labb3_V2.Models;
 
@@ -14,6 +13,8 @@ public partial class EdugradeHighSchoolContext : DbContext
     {
     }
 
+    public virtual DbSet<Avdelning> Avdelnings { get; set; }
+
     public virtual DbSet<Betyg> Betygs { get; set; }
 
     public virtual DbSet<KlassList> KlassLists { get; set; }
@@ -24,29 +25,23 @@ public partial class EdugradeHighSchoolContext : DbContext
 
     public virtual DbSet<Studenter> Studenters { get; set; }
 
+    public virtual DbSet<View_GetGradesFromLastMonth> View_GetGradesFromLastMonths { get; set; }
+
     public virtual DbSet<Ämnen> Ämnens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", ".."))
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            string connectionString = configuration.GetConnectionString("EdugradeHighSchool");
-
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<View_GetGradesFromLastMonth>()
-            .ToView("View_GetGradesFromLastMonth")
-            .HasNoKey();
+                .ToView("View_GetGradesFromLastMonth")
+                .HasNoKey();
 
+        modelBuilder.Entity<Avdelning>(entity =>
+        {
+            entity.ToTable("Avdelning");
+
+            entity.Property(e => e.AvdelningNamn).HasMaxLength(100);
+        });
 
         modelBuilder.Entity<Betyg>(entity =>
         {
@@ -61,17 +56,14 @@ public partial class EdugradeHighSchoolContext : DbContext
 
             entity.HasOne(d => d.FkPersonal).WithMany(p => p.Betygs)
                 .HasForeignKey(d => d.FkPersonalId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Betyg_PersonalId");
 
             entity.HasOne(d => d.FkStudent).WithMany(p => p.Betygs)
                 .HasForeignKey(d => d.FkStudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Betyg_StudentId");
 
             entity.HasOne(d => d.FkÄmne).WithMany(p => p.Betygs)
                 .HasForeignKey(d => d.FkÄmneId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Betyg_ÄmneId");
         });
 
@@ -86,12 +78,10 @@ public partial class EdugradeHighSchoolContext : DbContext
 
             entity.HasOne(d => d.FkKlass).WithMany()
                 .HasForeignKey(d => d.FkKlassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_KlassList_KlassId");
+                .HasConstraintName("FK_KlassList_Klasser");
 
             entity.HasOne(d => d.FkStudent).WithMany()
                 .HasForeignKey(d => d.FkStudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_KlassList_StudentId");
         });
 
@@ -108,17 +98,24 @@ public partial class EdugradeHighSchoolContext : DbContext
         {
             entity.ToTable("Personal", tb => tb.HasTrigger("PersonalAgeGenderName"));
 
+            entity.Property(e => e.FkAvdelningId).HasColumnName("FK_AvdelningId");
             entity.Property(e => e.PersonalEfternamn).HasMaxLength(25);
             entity.Property(e => e.PersonalFörnamn).HasMaxLength(25);
             entity.Property(e => e.PersonalKön)
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.PersonalLön).HasColumnType("money");
             entity.Property(e => e.PersonalNamn).HasMaxLength(50);
             entity.Property(e => e.PersonalSsn)
                 .HasMaxLength(12)
                 .IsUnicode(false)
                 .HasColumnName("PersonalSSN");
+
+            entity.HasOne(d => d.FkAvdelning).WithMany(p => p.Personals)
+                .HasForeignKey(d => d.FkAvdelningId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Personal_Avdelning");
         });
 
         modelBuilder.Entity<Studenter>(entity =>
@@ -128,6 +125,7 @@ public partial class EdugradeHighSchoolContext : DbContext
             entity.ToTable("Studenter", tb => tb.HasTrigger("StudentAgeGenderName"));
 
             entity.Property(e => e.StudentEfternamn).HasMaxLength(50);
+            entity.Property(e => e.StudentFödelsedag).HasColumnType("datetime");
             entity.Property(e => e.StudentFörnamn).HasMaxLength(50);
             entity.Property(e => e.StudentKön)
                 .HasMaxLength(1)
@@ -140,12 +138,18 @@ public partial class EdugradeHighSchoolContext : DbContext
                 .HasColumnName("StudentSSN");
         });
 
+
+
         modelBuilder.Entity<Ämnen>(entity =>
         {
             entity.HasKey(e => e.ÄmneId).HasName("PK_Ämne");
 
             entity.ToTable("Ämnen");
 
+            entity.Property(e => e.ÄmneAktivt)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.ÄmneNamn).HasMaxLength(50);
         });
 
