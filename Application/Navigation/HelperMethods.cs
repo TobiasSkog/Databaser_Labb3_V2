@@ -97,7 +97,7 @@ public static class HelperMethods
             StudentFörnamn = studentFörnamn,
             StudentEfternamn = studentEfternamn,
             StudentSsn = AnsiConsole.Prompt(
-                         new TextPrompt<string>("Enter the Social Security Number of the Student: ")
+                         new TextPrompt<string>("Enter the Social Security Number of the Student (10 or 12 numbers): ")
                          .Validate(
                              ssn =>
                                  string.IsNullOrWhiteSpace(ssn)
@@ -106,8 +106,11 @@ public static class HelperMethods
                                  ? ValidationResult.Error($"[red]Social Security Number must be at least 10 characters long[/]")
                                  : ssn.Length > 12
                                  ? ValidationResult.Error($"[red]Social Security Number must be maximum 12 characters long[/]")
+                                 : ssn.Length != 10 || ssn.Length != 12
+                                 ? ValidationResult.Error($"[red]Social Security Number must be 10 or 12 numbers[/]")
                                  : ValidationResult.Success()
-                         ))
+                         )),
+            StudentStartDatum = DateOnly.FromDateTime(DateTime.Now)
         };
     }
 }

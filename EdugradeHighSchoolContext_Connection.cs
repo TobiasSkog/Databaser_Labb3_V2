@@ -19,7 +19,4 @@ public partial class EdugradeHighSchoolContext : DbContext
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
-    //public virtual DbSet<View_GetGradesFromLastMonth> LastMonthsGrades { get; set; }
-
-
 }
