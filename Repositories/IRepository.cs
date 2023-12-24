@@ -22,5 +22,6 @@ namespace Databaser_Labb3_V2.Repositories
         Task<List<StudentInfo>> GetAllStudentInfo();
         Task<List<Ämnen>> GetAllActiveCourses();
         Task<List<DepartmentPayoutInformation>> GetDepartmentPayoutInformation();
+        Task TESTKLASSLIST();
     }
 }

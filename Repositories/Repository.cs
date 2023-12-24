@@ -76,6 +76,10 @@ public class Repository : IRepository
             return default;
         }
     }
+
+
+
+
     public async Task<List<(string? Gender, int AgeGroup, double AverageGradeNumeric, Grade AverageGradeString)>> GetAverageGradesBasedByAgeAndGender()
     {
         return Context.Betygs
@@ -131,6 +135,32 @@ public class Repository : IRepository
             return default;
         }
     }
+
+    public int ConvertGradeToInt(string grade)
+    {
+        switch (grade)
+        {
+            case "A":
+                return 5;
+            case "B":
+                return 4;
+            case "C":
+                return 15;
+            case "D":
+                return 9;
+            case "E":
+                return 1;
+
+            case "F":
+                return -1;
+            default:
+                break;
+        }
+
+        int gradeInt = Convert.ToInt32(grade);
+        return gradeInt;
+    }
+
     public async Task AddPersonalToDB(Personal personal)
     {
         try
@@ -218,7 +248,16 @@ public class Repository : IRepository
             "E" => (int)Grade.E,
             "F" => (int)Grade.F
         };
+
     }
+
+    //private string MapGradesToStringFromNumericValue(int gradeInt)
+    //{
+    //    return gradeInt switch
+    //    {
+
+    //    };
+    //}
     private Grade MapGradesFromNumericToGrade(double gradeValue) =>
         gradeValue > 4.5 ? Grade.A :
         gradeValue > 3.5 ? Grade.B :
@@ -226,6 +265,32 @@ public class Repository : IRepository
         gradeValue > 1.5 ? Grade.D :
         gradeValue > 0.5 ? Grade.E :
         Grade.F;
+
+    public string MapAverageGradeFromDouble(double gradeNumber)
+    {
+        if (gradeNumber > 4.5)
+        {
+            return "A";
+        }
+        else if (gradeNumber > 3.5)
+        {
+            return "B";
+        }
+        else if (gradeNumber > 2.5)
+        {
+            return "C";
+        }
+        else if (gradeNumber > 1.5)
+        {
+            return "D";
+        }
+        else if (gradeNumber > 0.5)
+        {
+            return "E";
+        }
+
+        return "F";
+    }
 
 
     private Grade CalculateAverageGrade(ICollection<Betyg> grades)
@@ -329,5 +394,20 @@ public class Repository : IRepository
                                  AveragePayout = avdelning.Personals.Average(personal => personal.PersonalLön.Value)
                              }).ToListAsync();
 
+    }
+
+
+    public async Task TESTKLASSLIST()
+    {
+        var klass = await Context.Klassers.FirstAsync(k => k.KlassId == 20);
+        var student = await Context.Studenters.FirstAsync(s => s.StudentId == 312);
+        var klassList = new KlassList
+        {
+            FkKlassId = klass.KlassId,
+            FkStudentId = student.StudentId
+        };
+
+        await Context.KlassLists.AddAsync(klassList);
+        await Context.SaveChangesAsync();
     }
 }

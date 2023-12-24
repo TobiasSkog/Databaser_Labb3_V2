@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Databaser_Labb3_V2.Models;
 
@@ -11,6 +12,17 @@ public partial class EdugradeHighSchoolContext : DbContext
     public EdugradeHighSchoolContext(DbContextOptions<EdugradeHighSchoolContext> options)
         : base(options)
     {
+
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        Console.WriteLine("AppDomain.CurrentDomain.BaseDirectory");
+        Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("EdugradeHighSchool"));
     }
 
     public virtual DbSet<Avdelning> Avdelnings { get; set; }
@@ -28,7 +40,6 @@ public partial class EdugradeHighSchoolContext : DbContext
     public virtual DbSet<View_GetGradesFromLastMonth> View_GetGradesFromLastMonths { get; set; }
 
     public virtual DbSet<Ämnen> Ämnens { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,9 +80,12 @@ public partial class EdugradeHighSchoolContext : DbContext
 
         modelBuilder.Entity<KlassList>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("KlassList");
+            //OM JAG SKA LÄGGA TILL KLASSLISTS SÅ KAN DETTA BEHÖVAS!
+            entity.HasKey(kl => new { kl.FkKlassId, kl.FkStudentId });
+            entity.ToTable("KlassList");
+            //entity
+            //    .HasNoKey()
+            //    .ToTable("KlassList");
 
             entity.Property(e => e.FkKlassId).HasColumnName("FK_KlassId");
             entity.Property(e => e.FkStudentId).HasColumnName("FK_StudentId");
@@ -151,6 +165,12 @@ public partial class EdugradeHighSchoolContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.ÄmneNamn).HasMaxLength(50);
+
+
+            //entity.Property(e => e.HurKändesDet)
+            //    .HasMaxLength(25)
+            //    .HasColumnType("money");
+
         });
 
         OnModelCreatingPartial(modelBuilder);

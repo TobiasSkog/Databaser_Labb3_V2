@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Databaser_Labb3_V2.Models;
+﻿namespace Databaser_Labb3_V2.Models;
 
 public partial class Personal
 {

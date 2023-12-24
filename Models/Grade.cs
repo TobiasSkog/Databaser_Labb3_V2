@@ -7,5 +7,5 @@ public enum Grade
     C = 3,
     D = 2,
     E = 1,
-    F = 0
+    F = 0,
 }

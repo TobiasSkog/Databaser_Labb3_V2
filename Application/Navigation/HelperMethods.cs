@@ -79,18 +79,27 @@ public static class HelperMethods
                     "Administrator",
                     "Education Leader"
             }));
+        var startDatum = AnsiConsole.Ask<DateOnly>("Enter the date the employee started working (leave empty if they joined today): ", DateOnly.FromDateTime(DateTime.Today));
         return new Personal
         {
             PersonalNamn = personalFörnamn.Trim() + " " + personalEfternamn.Trim(),
             PersonalFörnamn = personalFörnamn,
             PersonalEfternamn = personalEfternamn,
-            PersonalBefattning = (byte)(personalBefattning == "Teacher" ? 1 : personalBefattning == "Administrator" ? 2 : 3),
+            PersonalBefattning = (byte)(personalBefattning switch
+            {
+                "Teacher" => 1,
+                "Administrator" => 2,
+                _ => 3
+            }),
+            PersonalStartDatum = startDatum
         };
     }
     public static Studenter CreateNewStudent()
     {
         var studentFörnamn = AnsiConsole.Ask<string>("Enter the first name of the Student: ");
         var studentEfternamn = AnsiConsole.Ask<string>("Enter the last name of the Student: ");
+        var startDatum = AnsiConsole.Ask<DateOnly>("Enter the date the student started at the school (leave empty if they joined today): ", DateOnly.FromDateTime(DateTime.Today));
+
         return new Studenter
         {
             StudentNamn = studentFörnamn.Trim() + " " + studentEfternamn.Trim(),
@@ -110,7 +119,7 @@ public static class HelperMethods
                                  ? ValidationResult.Error($"[red]Social Security Number must be 10 or 12 numbers[/]")
                                  : ValidationResult.Success()
                          )),
-            StudentStartDatum = DateOnly.FromDateTime(DateTime.Now)
+            StudentStartDatum = startDatum
         };
     }
 }

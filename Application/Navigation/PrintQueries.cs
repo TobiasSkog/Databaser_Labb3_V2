@@ -1,5 +1,6 @@
 ﻿using Databaser_Labb3_V2.Models;
 using Spectre.Console;
+using System.Text;
 
 namespace Databaser_Labb3_V2.Application.Navigation;
 
@@ -18,21 +19,44 @@ public class PrintQueries
             new TableColumn($"Role"),
             new TableColumn($"Age"),
             new TableColumn($"Sex"),
+            new TableColumn($"Time Worked at Edugrade High School"),
             new TableColumn($"Social Security Number")
             );
         foreach (var p in personal)
         {
+            var personalDateConverted = p.PersonalStartDatum.Value.ToDateTime(TimeOnly.FromDateTime(DateTime.Now));
+            var timeWorkedAtSchool = (DateTime.Now - personalDateConverted).TotalDays;
+            var personalTimeSinceEmploymentBuilder = new StringBuilder();
+
+            if (timeWorkedAtSchool >= 365)
             {
-                table.AddRow(
-                    new Text(p.PersonalId.ToString()),
-                    new Text(p.PersonalFörnamn),
-                    new Text(p.PersonalEfternamn),
-                    new Text((p.PersonalBefattning == 1 ? "Teacher" : p.PersonalBefattning == 2 ? "Administrator" : "Education Leader")),
-                    new Text(p.PersonalÅlder.ToString()),
-                    new Text(p.PersonalKön),
-                    new Text(p.PersonalSsn)
-                    );
+                var years = timeWorkedAtSchool / 365;
+                personalTimeSinceEmploymentBuilder.Append($"{years:.} Year{(years > 1 ? "s" : "")} ");
+                timeWorkedAtSchool %= 365;
             }
+
+            if (timeWorkedAtSchool >= 30)
+            {
+                var months = timeWorkedAtSchool / 30;
+                personalTimeSinceEmploymentBuilder.Append($"{months:.} Month{(months > 1 ? "s" : "")} ");
+                timeWorkedAtSchool %= 30;
+            }
+
+            if (timeWorkedAtSchool > 0)
+            {
+                personalTimeSinceEmploymentBuilder.Append($"{timeWorkedAtSchool:.} Day{(timeWorkedAtSchool > 1 ? "s" : "")}");
+            }
+
+            table.AddRow(
+                new Text(p.PersonalId.ToString()),
+                new Text(p.PersonalFörnamn),
+                new Text(p.PersonalEfternamn),
+                new Text((p.PersonalBefattning == 1 ? "Teacher" : p.PersonalBefattning == 2 ? "Administrator" : "Education Leader")),
+                new Text(p.PersonalÅlder.ToString()),
+                new Text(p.PersonalKön),
+                new Text(personalTimeSinceEmploymentBuilder.ToString().Trim()),
+                new Text(p.PersonalSsn)
+                );
 
         }
         AnsiConsole.Write(table);

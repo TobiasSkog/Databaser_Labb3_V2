@@ -18,6 +18,8 @@ public class App
     }
     public async Task Run()
     {
+
+
         AnsiConsole.Cursor.Hide();
 
         while (_isAppRunning)
@@ -106,6 +108,8 @@ public class App
                     break;
 
                 case UserChoice.GetAllCoursesWithGradeInfo:
+                    await Repository.GetCourseInformation();
+                    Console.ReadKey();
                     PrintQueries.PrintCourseInformation(Repository.GetCourseInformation().Result);
                     break;
 
@@ -144,13 +148,10 @@ public class App
                 case UserChoice.Exit:
                     Exit();
                     break;
-
-                default:
-                    break;
             }
         }
     }
-    public void Exit()
+    private void Exit()
     {
         _isAppRunning = false;
         UserChoice = UserChoice.Exit;
