@@ -13,12 +13,12 @@ namespace Databaser_Labb3_V2.Repositories
         Task<List<KlassList>> GetAllStudentsInClass(string className, OrderOption nameSort, OrderOption ascOrDesc);
         Task<List<(string? Gender, int AgeGroup, double AverageGradeNumeric, Grade AverageGradeString)>> GetAverageGradesBasedByAgeAndGender();
         Task<List<CourseInformation>> GetCourseInformation();
-        Task AddPersonalToDB(Personal personal);
-        Task AddPersonalToDB(List<Personal> personal);
-        Task AddStudentToDB(Studenter student);
-        Task AddStudentToDB(List<Studenter> studenter);
+        Task AddPersonalToDb(Personal personal);
+        //Task AddPersonalToDb(List<Personal> personal);
+        Task AddStudentToDb(Studenter student);
+        //Task AddStudentToDb(List<Studenter> studenter);
         Task AssignStudentsToKlassList();
-        Task<Dictionary<string, int>> GetTeachersInEveryDepartMent();
+        Task<Dictionary<string, int>> GetTeachersInEveryDepartment();
         Task<List<StudentInfo>> GetAllStudentInfo();
         Task<List<Ämnen>> GetAllActiveCourses();
         Task<List<DepartmentPayoutInformation>> GetDepartmentPayoutInformation();

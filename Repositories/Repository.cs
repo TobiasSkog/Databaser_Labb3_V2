@@ -7,11 +7,7 @@ namespace Databaser_Labb3_V2.Repositories;
 
 public class Repository : IRepository
 {
-    private EdugradeHighSchoolContext Context { get; set; }
-    public Repository(EdugradeHighSchoolContext context)
-    {
-        Context = context;
-    }
+    private EdugradeHighSchoolContext Context { get; } = new();
 
     public async Task<List<Personal>> GetAllPersonal() => await Context.Personals.ToListAsync();
     public async Task<List<Studenter>> GetAllStudents() => await Context.Studenters.ToListAsync();
@@ -161,7 +157,7 @@ public class Repository : IRepository
         return gradeInt;
     }
 
-    public async Task AddPersonalToDB(Personal personal)
+    public async Task AddPersonalToDb(Personal personal)
     {
         try
         {
@@ -173,19 +169,19 @@ public class Repository : IRepository
             AnsiConsole.WriteException(ex);
         }
     }
-    public async Task AddPersonalToDB(List<Personal> personal)
-    {
-        try
-        {
-            await Context.Personals.AddRangeAsync(personal);
-            await Context.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            AnsiConsole.WriteException(ex);
-        }
-    }
-    public async Task AddStudentToDB(Studenter student)
+    //public async Task AddPersonalToDb(List<Personal> personal)
+    //{
+    //    try
+    //    {
+    //        await Context.Personals.AddRangeAsync(personal);
+    //        await Context.SaveChangesAsync();
+    //    }
+    //    catch (DbUpdateException ex)
+    //    {
+    //        AnsiConsole.WriteException(ex);
+    //    }
+    //}
+    public async Task AddStudentToDb(Studenter student)
     {
         try
         {
@@ -197,18 +193,18 @@ public class Repository : IRepository
             AnsiConsole.WriteException(ex);
         }
     }
-    public async Task AddStudentToDB(List<Studenter> studenter)
-    {
-        try
-        {
-            await Context.Studenters.AddRangeAsync(studenter);
-            await Context.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            AnsiConsole.WriteException(ex);
-        }
-    }
+    //public async Task AddStudentToDb(List<Studenter> studenter)
+    //{
+    //    try
+    //    {
+    //        await Context.Studenters.AddRangeAsync(studenter);
+    //        await Context.SaveChangesAsync();
+    //    }
+    //    catch (DbUpdateException ex)
+    //    {
+    //        AnsiConsole.WriteException(ex);
+    //    }
+    //}
     public async Task AssignStudentsToKlassList()
     {
         try
@@ -310,7 +306,7 @@ public class Repository : IRepository
     }
 
 
-    public async Task<Dictionary<string, int>> GetTeachersInEveryDepartMent()
+    public async Task<Dictionary<string, int>> GetTeachersInEveryDepartment()
     {
         var result = await Context.Personals
             .Join(Context.Avdelnings, personal => personal.FkAvdelningId,

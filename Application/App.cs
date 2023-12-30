@@ -18,8 +18,6 @@ public class App
     }
     public async Task Run()
     {
-
-
         AnsiConsole.Cursor.Hide();
 
         while (_isAppRunning)
@@ -89,12 +87,12 @@ public class App
                     {
                         case UserChoice.AddStudent:
                             var newStudent = HelperMethods.CreateNewStudent();
-                            await Repository.AddStudentToDB(newStudent);
+                            await Repository.AddStudentToDb(newStudent);
                             break;
 
                         case UserChoice.AddPersonal:
                             var newPersonal = HelperMethods.CreateNewPersonal();
-                            await Repository.AddPersonalToDB(newPersonal);
+                            await Repository.AddPersonalToDb(newPersonal);
                             break;
 
                         case UserChoice.Exit:
@@ -123,7 +121,7 @@ public class App
                     switch (databaseProjectChoice)
                     {
                         case UserChoice.DepartmentInfoTeachers:
-                            PrintQueries.PrintAmountOfTeachersInEachDepartMent(Repository.GetTeachersInEveryDepartMent().Result);
+                            PrintQueries.PrintAmountOfTeachersInEachDepartMent(Repository.GetTeachersInEveryDepartment().Result);
                             break;
 
                         case UserChoice.AllStudentInfo:
